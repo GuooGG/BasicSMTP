@@ -21,12 +21,24 @@
     <ClCompile Include="socket.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="EmailSender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MailBuilder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="socket.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="simple_Base64.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EmailSender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MailBuilder.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

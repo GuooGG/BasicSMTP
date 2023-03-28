@@ -140,10 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicSMTP.cpp" />
+    <ClCompile Include="EmailSender.cpp" />
+    <ClCompile Include="MailBuilder.cpp" />
     <ClCompile Include="socket.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MailBuilder.h" />
     <ClInclude Include="simple_Base64.h" />
+    <ClInclude Include="EmailSender.h" />
     <ClInclude Include="socket.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
