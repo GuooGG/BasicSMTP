@@ -8,7 +8,6 @@
 
 #pragma comment(lib,"ws2_32.lib")
 
-
 #define SEVER_IP "183.47.101.192"
 #define SEVER_PORT 25
 #define USERNAME "2311619185@qq.com"
