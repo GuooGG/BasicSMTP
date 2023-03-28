@@ -5,9 +5,11 @@
 #include<sstream>
 #include<istream>
 #include <fstream>
-
+#include"socket.h"
+#include"simple_Base64.h"
 #pragma comment(lib,"ws2_32.lib")
 
+#define SEVER_ADRESS "smtp.qq.com"
 #define SEVER_IP "183.47.101.192"
 #define SEVER_PORT 25
 #define USERNAME "2311619185@qq.com"
@@ -17,49 +19,7 @@
 
 #define BUFFER_SIZE 1024
 
-//手动进行base64编码，不安全，后续可以换成第三方库实现
-const char* base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-std::string base64_encode(const std::string& s) {
-	std::string result;
-	int i = 0;
-	int j = 0;
-	unsigned char char_array_3[3];
-	unsigned char char_array_4[4];
 
-	for (std::string::const_iterator iter = s.begin(); iter != s.end(); ++iter) {
-		char_array_3[i++] = *iter;
-		if (i == 3) {
-			char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-			char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-			char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-			char_array_4[3] = char_array_3[2] & 0x3f;
-
-			for (i = 0; i < 4; i++) {
-				result += base64_chars[char_array_4[i]];
-			}
-			i = 0;
-		}
-	}
-
-	if (i) {
-		for (j = i; j < 3; j++) {
-			char_array_3[j] = '\0';
-		}
-		char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-		char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-		char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-
-		for (j = 0; j < i + 1; j++) {
-			result += base64_chars[char_array_4[j]];
-		}
-
-		while (i++ < 3) {
-			result += '=';
-		}
-	}
-
-	return result;
-}
 
 int main() 
 {
@@ -72,26 +32,11 @@ int main()
 		return 1;
 	}
 	//创建套接字
-	SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (sock == INVALID_SOCKET) {
-		std::cerr << "socket failed : " << WSAGetLastError() << std::endl;
-		WSACleanup();
-		return 1;
-	}
-	//连接到SMTP服务器
-	SOCKADDR_IN severAddr;
-	severAddr.sin_family = AF_INET;
-	severAddr.sin_port = htons(SEVER_PORT);
-	severAddr.sin_addr.s_addr = inet_addr(SEVER_IP);
-	result = connect(sock, (SOCKADDR*)&severAddr, sizeof(severAddr));
-	if (result == SOCKET_ERROR) {
-		std::cerr << "connect failed : " << WSAGetLastError() << std::endl;
-		closesocket(sock);
-		WSACleanup();
-		return 1;
-	}
-	//接收服务器欢迎消息
+	SOCKET sock = connecttcp(SEVER_ADRESS, "smtp");
+	//创建缓冲区
 	char buffer[BUFFER_SIZE+1];
+	std::stringstream ss;
+	//接收服务器欢迎消息
 	result = recv(sock, buffer, BUFFER_SIZE, 0);
 	if (result == SOCKET_ERROR) {
 		std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
@@ -102,7 +47,6 @@ int main()
 	buffer[result] = '\0';
 	std::cout << buffer << std::endl;
 	//发送EHLO命令
-	std::stringstream ss;
 	ss << "EHLO " << "localhost" << "\r\n";
 	std::string ehloCmd = ss.str();
 	result = send(sock, ehloCmd.c_str(), ehloCmd.length(), 0);
