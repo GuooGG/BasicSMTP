@@ -20,11 +20,8 @@
 #define BUFFER_SIZE 1024
 
 int main() {
-    std::string senderEmailAdress = SENDER_EMAIL_ADDRESS;
-    std::string senderEmailPassword = PASSWORD;
-    std::string recipientEmailAdress = RECIPIENT_EMAIL_ADDRESS;
 
-    EmailSender sender(senderEmailAdress, senderEmailPassword, recipientEmailAdress);
+    EmailSender sender(SENDER_EMAIL_ADDRESS,PASSWORD, RECIPIENT_EMAIL_ADDRESS);
 
     std::string subject = "Test email";
     std::string body = "This is a test email sent from EmailSender";

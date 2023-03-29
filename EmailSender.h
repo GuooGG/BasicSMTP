@@ -28,6 +28,7 @@ private:
 	bool EHLO();
 	bool MAIL_FROM();
 	bool RCPT_TO();
+	bool DATA();
 	//可以右值引用优化吗
 	bool sendData(const std::string data);
 	bool receiveData();

@@ -55,14 +55,9 @@ bool EmailSender::sendEmail(const std::string& subject,
     if (!RCPT_TO()) {
         return false;
     }
-    //发送DATA命令
-    if (!sendData("DATA\r\n")) {
+    if (!DATA()) {
         return false;
     }
-    if (!receiveData()) {
-        return false;
-    }
-
     //构造邮件头部
     std::string from = m_senderEmailAddress;
     std::string to = m_recipientEmailAddress;
@@ -211,6 +206,16 @@ bool EmailSender::RCPT_TO()
     CmdBuilder.clear();
     CmdBuilder << "RCPT TO: <" << m_recipientEmailAddress << ">\r\n";
     if (!sendData(CmdBuilder.str())) {
+        return false;
+    }
+    if (!receiveData()) {
+        return false;
+    }
+    return true;
+}
+bool EmailSender::DATA()
+{
+    if (!sendData("DATA\r\n")) {
         return false;
     }
     if (!receiveData()) {
